@@ -1,0 +1,70 @@
+@import '../../../assets/styles/common.styl';
+
+.login-title
+  padding 40px 0 30px
+  text-align center
+  color $titleColor
+  font-size 24px
+.info-title
+  font-size: 20px
+  color $baseColor
+  height: 76
+  line-height: 76px
+  padding: 0 30px
+  border-bottom: 1px solid #eee
+.input-box
+  position relative
+  .input-iconfont
+    position absolute
+    z-index: 2
+    height: 46px
+    width 46px
+    text-align center
+    line-height: 46px
+    font-size: 25px
+    color #666
+  input
+    height 46px
+    border-radius 0
+    padding-left: 45px
+    background-color: rgb(221, 227, 236)
+    color: rgb(130, 144, 163)
+    border: none
+    font-size: 14px
+.input-box.icon-less
+  input
+    padding-left 15px
+.input-box.adress-input
+  input
+    cursor pointer
+
+button.submit-button
+  background-color $submitButtonColor
+  border-radius 0
+  height: 42px
+  font-size: 16px
+  border: none
+  width 100%
+  margin-bottom: 30px
+
+button.getcode-button
+  position: absolute
+  height: 40px
+  border-radius: 0
+  border: none
+  color: $titleColor
+  right: 3px
+  top: 3px
+
+::-webkit-input-placeholder { /* WebKit browsers */
+  color:rgb(130, 144, 163)
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color:rgb(130, 144, 163)
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color:rgb(130, 144, 163)
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+  color:rgb(130, 144, 163)
+}
