@@ -16,6 +16,7 @@
 </template>
 <script>
 import md5 from '@/assets/js/md5.js'
+import {INIT_LOGIN} from '@/vuex/actions_types'
 export default {
   data () {
     return {
@@ -45,7 +46,9 @@ export default {
               logintype:'pc'
             })
               .then(res => {
-                console.log(res.data.error,123)
+                if(res.data.error === '0'){
+                  this.$store.dispatch(INIT_LOGIN,res.data.data)
+                }
               })
           } else {
             return false;

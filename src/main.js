@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import store from './vuex/store'
 import api from '@/api'
+import {API_ROOT} from '@/api/config'
 import './assets/styles/public_class.styl'
 import './assets/styles/reset.styl'
 Vue.config.productionTip = false
@@ -16,6 +17,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI);
 
 Vue.prototype.$api = api
+Vue.prototype.$API_ROOT = API_ROOT
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

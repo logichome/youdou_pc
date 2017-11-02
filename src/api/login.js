@@ -1,21 +1,48 @@
 import axios from './interceptors'
 import {API_ROOT} from './config'
 
+/**
+ * 密码登陆
+ * @param {*登陆表单} info 
+ */
 export const login = info => axios.post(API_ROOT + 'companyuser/login',info)
 
 /**
- * 获取用户信息
- * @param {*用户信息} info 
+ * 获取验证码
+ * @param {*电话} phone 
  */
-export const getUserInfo = info => axios.get(API_ROOT + 'getuserinfo',{params:info})
+export const getCheckCode = phone => axios.post(API_ROOT + 'companyuser/verifycode',phone)
 
 /**
- * 上传头像
+ * 获取完善信息选项内容
+ */
+export const getFormOption = () => axios.get(API_ROOT + 'business/businfo')
+
+/**
+ * 手机号注册
+ * @param {*注册信息} info 
+ */
+export const submitRegister = info => axios.post(API_ROOT + 'companyuser/quicklogin',info)
+
+/**
+ * 手机号登陆
+ * @param {*登陆信息} info 
+ */
+export const messageLogin = info => axios.post(API_ROOT + 'companyuser/quicklogin',info)
+
+/**
+ * 获取用户信息
+ * @param {*企业id} id 
+ */
+export const getUserInfo = id => axios.get(API_ROOT + 'business/businfo',id)
+
+/**
+ * 上传图片
  * @param {*发送参数} formData 
  * @param {*进度条回调} onUploadProgress 
  */
-export const uploadAvatar = (formData,onUploadProgress) => axios({
-  url:API_ROOT + 'uploadAvatar',
+export const uploadCompanyImg = (formData,onUploadProgress) => axios({
+  url:API_ROOT + 'businessimg/create',
   method:'post',
   data:formData,
   headers: {'Content-Type': 'multipart/form-data'},

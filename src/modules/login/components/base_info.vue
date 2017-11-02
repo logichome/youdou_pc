@@ -5,7 +5,7 @@
     </div>
     <div class="base-info-content">
       <div class="base-info-form">
-        <el-form ref="form">
+        <el-form ref="form" :rules="rules" :model="form">
           <el-form-item class="input-box" prop="user_person">
             <i class="iconfont input-iconfont icon-personal"></i>
             <el-input :maxlength="10" placeholder="联系人" v-model="form.user_person"></el-input>
@@ -30,6 +30,7 @@
   </div>
 </template>
 <script>
+import {SET_LOGIN_STEP,SET_TEMP_INFO} from '@/vuex/mutations_types'
 export default {
   data () {
     return {
@@ -37,6 +38,19 @@ export default {
         user_person:'',
         user_number:'',
         identity:''
+      },        
+      rules: {
+        user_person: [
+          { required: true, message: '请输入联系人', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+        ],
+        user_number: [
+          { required: true, message: '请输入联系人电话', trigger: 'blur' }
+        ],
+        identity: [
+          { required: true, message: '请输入联系人身份', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+        ],
       },
       identityList: [
         {value:'老板'},
@@ -63,6 +77,14 @@ export default {
       };
     },
     submit(){
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.$store.commit(SET_TEMP_INFO,this.form)
+          this.$store.commit(SET_LOGIN_STEP,2)
+        } else {
+          return false;
+        }
+      });
 
     }
   }

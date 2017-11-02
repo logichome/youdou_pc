@@ -52,8 +52,13 @@ export default {
   data () {
     return {
       loginType:'password',
-      isRegister:false,
-      step:2  //0：登陆与注册，1：填写基础信息，2：公司信息
+      isRegister:false
+    }
+  },
+  computed:{
+    //0：登陆与注册，1：填写基础信息，2：公司信息
+    step(){
+      return this.$store.state.login.loginStep
     }
   },
   components:{
