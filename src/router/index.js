@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import welcome from '@/components/welcome'
+import main from '@/components/main'
 import login from './login'
 import resume from './resume'
 
@@ -12,6 +13,11 @@ export default new Router({
       path: '/',
       name: 'welcome',
       component: welcome
+    },
+    {
+      path: '/main',
+      name: 'main',
+      component: main
     },
     ...login,
     ...resume

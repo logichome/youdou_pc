@@ -20,7 +20,7 @@
   </div>
 </template>
 <script>
-import {INIT_LOGIN } from '@/vuex/actions_types'
+import { INIT_LOGIN } from '@/vuex/actions_types'
 export default {
   data () {
     return {

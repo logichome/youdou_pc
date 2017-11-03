@@ -12,6 +12,9 @@
   line-height: 76px
   padding: 0 30px
   border-bottom: 1px solid #eee
+.input-box-select.input-box
+  input 
+    height 36px
 .input-box
   position relative
   .input-iconfont
@@ -24,15 +27,18 @@
     font-size: 25px
     color #666
   input
-    height 46px
+  textarea
+    height 46px 
     border-radius 0
     padding-left: 45px
     background-color: rgb(221, 227, 236)
     color: rgb(130, 144, 163)
     border: none
     font-size: 14px
+    font-family: 'microsoft yahei'
   input.el-select__input
     background-color transparent
+    padding-left: 0 !important
   .el-select
     display: block
 .input-box.input-right-icon
@@ -54,6 +60,7 @@
     
 .input-box.icon-less
   input
+  textarea
     padding-left 15px
 .input-box.adress-input
   input
@@ -86,6 +93,7 @@ button.getcode-button
     display: none
 
 input
+textarea
   &::-webkit-input-placeholder { /* WebKit browsers */
     color:rgb(130, 144, 163)
   }

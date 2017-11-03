@@ -12,7 +12,7 @@
           </el-form-item>
           <el-form-item class="input-box" prop="user_number">
             <i class="iconfont input-iconfont icon-tel"></i>
-            <el-input :maxlength="10" placeholder="联系电话" v-model="form.user_number"></el-input>
+            <el-input :maxlength="20" placeholder="联系电话" v-model="form.user_number"></el-input>
           </el-form-item>
           <el-form-item class="input-box" prop="identity">
             <i class="iconfont input-iconfont icon-identity"></i>

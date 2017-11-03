@@ -5,22 +5,22 @@
   </div>
   <div class="company-info-content">
     <div class="company-info-form">
-      <div class="avatar-box">
-        <div class="avatar">
-          <input type="file" @change="uploadLogo">
-          <i v-show="!logoUrl" class="iconfont icon-photo"></i>
-          <img :src="logoUrl" alt="">
-        </div>
-        
-      </div>
-      <el-form ref="form">
+
+      <el-form ref="form" :rules="rules" :model="form">
+        <el-form-item class="avatar-box" prop="logo">
+          <el-input v-model="form.logo" v-show="false"></el-input>
+          <div class="avatar" :style="'background-image:url('+logoUrl+')'">
+            <input type="file" @change="uploadLogo">
+            <i v-show="!logoUrl" class="iconfont icon-photo"></i>
+          </div>
+        </el-form-item>
         <el-form-item class="input-box icon-less" prop="business_name">
           <el-input :maxlength="20" placeholder="公司名称" v-model="form.business_name"></el-input>
         </el-form-item>
         <el-form-item class="input-box icon-less" prop="short_name">
           <el-input :maxlength="10" placeholder="公司简称" v-model="form.short_name"></el-input>
         </el-form-item>
-        <el-form-item class="input-box icon-less adress-input" prop="user_number">
+        <el-form-item class="input-box icon-less adress-input" prop="address">
           <el-input @focus="chooseAddress" placeholder="公司地址" readonly v-model="form.address"></el-input>
         </el-form-item>
         <el-form-item class="input-box icon-less input-right-icon" prop="industry">
@@ -53,7 +53,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="input-box icon-less" prop="welfare">
+        <el-form-item class="input-box icon-less input-box-select" prop="welfare">
           <el-select v-model="form.welfare" multiple filterable allow-create placeholder="请选择公司福利">
             <el-option
               v-for="item in welfareOptions"
@@ -63,15 +63,11 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item class="input-box icon-less last-el-form-item" prop="introduction">
+          <el-input type="textarea" :autosize="{minRows: 3, maxRows: 6}" resize="none" placeholder="公司简介" v-model="form.introduction"></el-input>
+        </el-form-item>
       </el-form>
-      <el-upload
-        :action="$API_ROOT+'businessimg/create'"
-        list-type="picture-card"
-        :on-preview="handlePictureCardPreview"
-        class="img-upload"
-        :on-remove="handleRemove">
-        <i class="el-icon-plus"></i>
-      </el-upload>
+      <upload-img @imgSubmit="handleImgsUpload"></upload-img>
       <el-button @click="submit" class="submit-button" type="primary">完成</el-button>
     </div>
     <div class="info-youdou-logo">
@@ -89,6 +85,8 @@
 </template>
 <script>
 import chooseAddress from '@/components/form/choose_address'
+import uploadImg from '@/components/form/upload_img'
+import { INIT_LOGIN } from '@/vuex/actions_types'
 import { mapState } from 'vuex'
 export default {
   data () {
@@ -98,6 +96,7 @@ export default {
         short_name:'',
         welfare:[],
         scale:'',
+        industry:[],
         property:'',
         introduction:'',
         address:'',
@@ -105,6 +104,17 @@ export default {
         latitude:'',
         logo:'',
         businfo_img:[]
+      },
+      rules:{
+        business_name:[{ required: true, message: '请输入公司名称', trigger: 'blur' }],
+        short_name:[{ required: true, message: '请输入公司简称', trigger: 'blur' }],
+        introduction:[{ required: true, message: '请输入公司简介', trigger: 'blur' }],
+        welfare:[{ type: 'array', required: true, message: '请选择公司福利', trigger: 'change' }],
+        industry:[{ type: 'array', required: true, message: '请选择行业类型', trigger: 'change' }],
+        scale:[{ type:'number', required: true, message: '请选择公司规模', trigger: 'change' }],
+        property:[{ type:'number', required: true, message: '请选择公司性质', trigger: 'change' }],
+        address:[{ required: true, message: '请选择公司地址', trigger: 'blur' }],
+        logo:[{ required: true, message: '请上传公司logo', trigger: 'change'}],
       },
       mapVisible:false,
       logoUrl:''
@@ -137,25 +147,35 @@ export default {
       formData.append('files[0]',e.target.files[0])
       this.$api.login.uploadCompanyImg(formData)
         .then(res => {
-          this.form.logl = res.data.data[0].imgId
+          this.form.logo = res.data.data[0].imgId
           this.logoUrl = res.data.data[0].filePath
         })
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+    // 上传图片
+    handleImgsUpload(id){
+      this.form.businfo_img = id
     },
     // 提交信息
     submit(){
-      let form = {...this.tempInfo,...this.form}
-      console.log(form)
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          let form = {...this.tempInfo,...this.form}
+          this.$api.login.completeCompanyInfo(form)
+            .then(res => {
+              if(res.data.error === '0') {
+                this.$store.dispatch(INIT_LOGIN,{...res.data.data,is_business:'1'})
+              }
+            })
+        } else {
+          return false;
+        }
+      });
+      
     }
   },
   components:{
-    chooseAddress
+    chooseAddress,
+    uploadImg
   },
   mounted(){
   }
@@ -171,7 +191,7 @@ export default {
     margin-bottom 100px
     padding-right 340px
     .avatar-box
-      height 100px
+      height 80px
       position relative
       .avatar
         position relative
@@ -182,9 +202,13 @@ export default {
         overflow hidden
         background-color #dde3ec
         text-align center
+        background-size cover
+        background-position center
         i
           background-color #dde3ec
           position absolute
+          left 0
+          top 0
           line-height 65px
           text-align center
           font-size 35px
@@ -206,6 +230,8 @@ export default {
       width 350px
       padding 30px
       border-right 1px solid #eee
+      .last-el-form-item
+        margin-bottom 10px
     .img-upload
       margin-bottom 10px
     .info-youdou-logo

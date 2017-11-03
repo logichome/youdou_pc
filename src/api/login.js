@@ -31,10 +31,16 @@ export const submitRegister = info => axios.post(API_ROOT + 'companyuser/quicklo
 export const messageLogin = info => axios.post(API_ROOT + 'companyuser/quicklogin',info)
 
 /**
+ * 完善企业信息
+ * @param {*企业信息} info 
+ */
+export const completeCompanyInfo = info => axios.post(API_ROOT + 'business/create',info)
+
+/**
  * 获取用户信息
  * @param {*企业id} id 
  */
-export const getUserInfo = id => axios.get(API_ROOT + 'business/businfo',id)
+export const getUserInfo = id => axios.get(API_ROOT + 'business/company_view',id)
 
 /**
  * 上传图片

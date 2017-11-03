@@ -1,6 +1,7 @@
 import Axios from 'axios'
 import { Message } from 'element-ui';
 import store from '@/vuex/store'
+import { SET_LOGIN_STEP } from '@/vuex/mutations_types'
 
 function getXtoken() {
   return localStorage.YOUDOU_PC_TOKEN
@@ -42,7 +43,7 @@ Axios.interceptors.request.use(
 /**
  * 拦截响应
  */
-Axios.interceptors.response.use(function (response) {
+Axios.interceptors.response.use( response => {
   if(response.status!==200) {
     Message({
       message: '请求出错，状态码：'+response.status,
@@ -61,6 +62,7 @@ Axios.interceptors.response.use(function (response) {
         router.replace({
           path: '/login'
         })
+        store.commit(SET_LOGIN_STEP,0)
         break;
     }
 

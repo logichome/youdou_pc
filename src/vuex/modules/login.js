@@ -22,7 +22,8 @@ const state = {
   u_id:'',
   token:'',
   username: '',
-  tempBaseInfo:{}
+  tempBaseInfo:{},
+  userInfo:{}
 }
 
 const mutations = {
@@ -74,7 +75,7 @@ const actions = {
   },
   // 初始化用户信息
   [INIT_USER_INFO]({state,commit}){
-    api.login.getUserInfo({id:state.business_id})
+    api.login.getUserInfo({businessId:state.business_id,abc:123})
       .then(res => {
         console.log('hahawozuishuai',res)
       })
