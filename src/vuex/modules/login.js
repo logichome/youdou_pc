@@ -41,6 +41,8 @@ const mutations = {
     state.business_id = loginInfo.business_id || state.business_id
     state.token = loginInfo.token || state.token
     localStorage.YOUDOU_PC_TOKEN = loginInfo.token || state.token || ''
+    localStorage.YOUDOU_PC_BUSINESS_ID = loginInfo.business_id || state.business_id || ''
+    localStorage.YOUDOU_PC_U_ID = loginInfo.u_id || state.u_id || ''
   },
   //初始化用户信息
   [SET_USER_INFO](state, userInfo) {
@@ -68,16 +70,18 @@ const actions = {
     //如果已完善信息则获取公司信息
     if(loginInfo.is_business === '1'){
       dispatch(INIT_USER_INFO)
-      router.push('/resume')
+      router.push('/main')
     } else {
       commit(SET_LOGIN_STEP,1)
     }
   },
   // 初始化用户信息
   [INIT_USER_INFO]({state,commit}){
-    api.login.getUserInfo({businessId:state.business_id,abc:123})
+    api.login.getUserInfo({business_id:localStorage.YOUDOU_PC_BUSINESS_ID})
       .then(res => {
-        console.log('hahawozuishuai',res)
+        if(res.data.error === '0'){
+          state.userInfo = res.data.data
+        }
       })
   }
 }

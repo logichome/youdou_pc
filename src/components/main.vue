@@ -18,10 +18,14 @@
   </div>
 </template>
 <script>
+import { INIT_USER_INFO } from '../vuex/actions_types'
 export default {
   data () {
     return {
     }
+  },
+  created(){
+    this.$store.dispatch(INIT_USER_INFO)
   }
 }
 </script>

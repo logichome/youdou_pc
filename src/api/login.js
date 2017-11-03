@@ -40,7 +40,7 @@ export const completeCompanyInfo = info => axios.post(API_ROOT + 'business/creat
  * 获取用户信息
  * @param {*企业id} id 
  */
-export const getUserInfo = id => axios.get(API_ROOT + 'business/company_view',id)
+export const getUserInfo = id => axios.get(API_ROOT + 'business/view',{params:id})
 
 /**
  * 上传图片
