@@ -14,9 +14,14 @@ export const login = info => axios.post(API_ROOT + 'companyuser/login',info)
 export const getCheckCode = phone => axios.post(API_ROOT + 'companyuser/verifycode',phone)
 
 /**
- * 获取完善信息选项内容
+ * 获取完善企业信息选项内容
  */
 export const getFormOption = () => axios.get(API_ROOT + 'business/businfo')
+
+/**
+ * 获取岗位相关信息选项
+ */
+export const getJobFormOption = () => axios.get(API_ROOT + 'businessjob/info')
 
 /**
  * 手机号注册

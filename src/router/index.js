@@ -4,10 +4,13 @@ import welcome from '@/components/welcome'
 import main from '@/components/main'
 import login from './login'
 import resume from './resume'
-
+import conversation from './conversation'
+import workManage from './work_manage'
+import jobManage from './job_manage'
+import store from '@/vuex/store'
 Vue.use(Router)
 
-export default new Router({
+let router =  new Router({
   routes: [
     {
       path: '/',
@@ -17,9 +20,24 @@ export default new Router({
     {
       path: '/main',
       name: 'main',
-      component: main
+      component: main,
+      children:[
+        {
+          path:'',
+          redirect:'resume'
+        },
+        ...resume,
+        ...conversation,
+        ...workManage,
+        ...jobManage
+      ]
     },
-    ...login,
-    ...resume
+    ...login
   ]
 })
+
+// router.beforeEach((to, from, next) => {
+
+// })
+
+export default router

@@ -1,5 +1,5 @@
 <template>
-  <div class="login-password">
+  <div class="login-password" v-loading="loginLoading">
     <div class="login-title">登陆</div>
     <el-form :rules="rules" ref="form" :model="form">
       <el-form-item class="input-box" prop="telephone">
@@ -17,6 +17,7 @@
 <script>
 import md5 from '@/assets/js/md5.js'
 import {INIT_LOGIN} from '@/vuex/actions_types'
+import {UPDATE_LOGIN_LOADING} from '@/vuex/mutations_types'
 export default {
   data () {
     return {
@@ -36,10 +37,16 @@ export default {
       }
     }
   },
+  computed:{
+    loginLoading(){
+      return this.$store.state.login.loginLoading
+    }
+  },
   methods:{
     submit(){
       this.$refs['form'].validate((valid) => {
           if (valid) {
+            this.$store.commit(UPDATE_LOGIN_LOADING,true)
             this.$api.login.login({
               telephone:this.form.telephone,
               password:md5.hexMD5(this.form.password),
