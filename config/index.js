@@ -34,7 +34,7 @@ module.exports = {
     proxyTable: {
       '/api': {
         // target: 'https://demo.youdou.com',
-        target: 'http://192.168.3.48',
+        target: 'http://192.168.199.191',
         changeOrigin: true,
         secure: false,
         pathRewrite: {

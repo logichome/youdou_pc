@@ -87,6 +87,7 @@ export default {
   right: 0;
   width: 100%;
   height: 100%;
+  min-width 1000px
   .header
     position absolute
     top 0
@@ -158,7 +159,7 @@ export default {
           color #000
           &.router-link-active
             background-color rgb(195, 206, 221);
-            cursor default
+            // cursor default
           i
             position absolute
             left 34px

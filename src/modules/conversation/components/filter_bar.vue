@@ -4,7 +4,7 @@
       <i class="iconfont icon-filter"></i>
       <span>筛选</span>
     </div>
-    <div class="operation fl">
+    <div @click="handleOperationOpen" class="operation fl">
       <i class="iconfont icon-operation"></i>
       <span>操作</span>
     </div>
@@ -38,11 +38,29 @@
         </ul>
       </div>
     </div>
+    <div class="operation-box" v-show="operationShowed">
+      <button class="operation-button" @click="handleOperationClick(1)">
+        <i class="iconfont icon-Happy"></i>
+        <span>合适</span>
+      </button>
+      <button class="operation-button" @click="handleOperationClick(2)">
+        <i class="iconfont icon-sad"></i>
+        <span>不合适</span>
+      </button>
+      <button class="operation-button" @click="handleOperationClick(3)">
+        <i class="el-icon-check"></i>
+        <span>已读</span>
+      </button>
+      <span class="operation-count">已选 {{operationCount}} 位</span>
+      <span class="operation-cancel" @click="handleOperationCancel">取消</span>
+    </div>
   </div>
 </template>
 <script>
 import { mapState } from 'vuex'
+import { GET_CONVERSATION_LIST } from '@/vuex/actions_types'
 export default {
+  props:['operationCount','operationShowed'],
   data () {
     return {
       invitationOptions:[
@@ -78,12 +96,28 @@ export default {
   methods:{
     //刷新列表
     handleRefresh(){
+      this.$store.dispatch(GET_CONVERSATION_LIST)
       this.$emit('refresh')
     },
     //过滤变更
     handleFilterChange(e){
       this.filter[e.target.dataset.option] = e.target.dataset.value
+      this.$store.dispatch(GET_CONVERSATION_LIST,this.filter)
       this.$emit('filterChange',this.filter)
+    },
+    // 打开操作
+    handleOperationOpen(){
+      this.$emit('update:operationShowed', true)
+    },
+    // 取消操作
+    handleOperationCancel(){
+      this.$emit('update:operationShowed', false)
+    },
+    // 点击操作
+    handleOperationClick(status){
+      if(this.operationCount > 0) {
+        this.$emit('operationClick', status)
+      }
     }
   },
   created(){
@@ -95,10 +129,15 @@ export default {
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 .filter-bar
-  position relative
+  box-sizing border-box
+  color #333
+  position: absolute;
+  top: 0;
+  width: 100%;
+  left: 0;
   height 40px
   padding-left 10px
-  // background-color #fcffe7
+  background-color #fff
   .filter-options
   .operation
   .refresh
@@ -114,6 +153,7 @@ export default {
     height 120px
     padding 15px 0
     border: 1px solid rgb(228, 228, 228)
+    background-color #fff
     color rgb(51, 51, 51);
     font-size 12px
     .options-group
@@ -136,4 +176,43 @@ export default {
           &.active
             background-color rgb(231, 95, 21)
             color #fff
+  .operation-box
+    position absolute
+    top 0
+    left 0
+    width 100%
+    height 100%
+    line-height 40px
+    background-color rgb(26, 158, 220)
+    .operation-button
+      cursor pointer
+      height 26px
+      padding 0 10px
+      border-radius 4px
+      margin-left 10px
+      background-color rgba(255,255,255,0.6)
+      &:hover
+        background-color rgba(255,255,255,1)
+      
+    .operation-button:nth-of-type(1)
+      i
+        color green
+        font-weight bold
+    .operation-button:nth-of-type(2)
+      i
+        color red
+        font-weight bold
+    .operation-button:nth-of-type(3)
+      i
+        color orange
+        font-size 16px
+        font-weight bold
+    .operation-count
+      color #fff
+      margin-left 10px
+    .operation-cancel
+      float right 
+      padding 0 20px
+      color #fff
+      cursor pointer
 </style>

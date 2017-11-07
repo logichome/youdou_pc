@@ -74,7 +74,7 @@ Axios.interceptors.response.use( response => {
       message: '请求出错，未知错误',
       type: 'error'
     })
-    console(error)
+    console.log(error)
     return Promise.reject(error)
   }
 )
