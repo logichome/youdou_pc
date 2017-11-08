@@ -98,14 +98,15 @@
           <div class="chat-list"></div>
         </div>
         <div class="chat-input-box">
-          <el-input class="chat-input" v-model="input" placeholder="请输入内容"></el-input>
+          <el-input class="chat-input" v-model="inputMessage" placeholder="请输入内容"></el-input>
+          <button class="send-message">发送</button>
         </div>
       </div>
 
     </div>
 
     <el-dialog title="工作经历"  :visible.sync="experienceVisble" width="700px">
-      <el-table v-if="resumeInfo.experience" ref="experienceTable" @row-click="handleDialogRowClick" :data="resumeInfo.experience" :show-header="true">
+      <el-table v-if="resumeInfo" ref="experienceTable" @row-click="handleDialogRowClick" :data="resumeInfo.experience" :show-header="true">
         <el-table-column type="expand">
           <template slot-scope="props">
             {{props.row.work_content}}
@@ -119,7 +120,7 @@
     </el-dialog>
 
     <el-dialog title="教育经历"  :visible.sync="educationVisible" width="700px">
-      <el-table v-if="resumeInfo.education" ref="educationTable" @row-click="handleDialogRowClick" :data="resumeInfo.education" :show-header="true">
+      <el-table v-if="resumeInfo" ref="educationTable" @row-click="handleDialogRowClick" :data="resumeInfo.education" :show-header="true">
         <el-table-column type="expand">
           <template slot-scope="props">
             {{props.row.schoole_experience}}
@@ -144,6 +145,8 @@ export default {
       chatLoading:false,
       experienceVisble:false,
       educationVisible:false,
+
+      inputMessage:'',
 
       resumeInfo:null,
       chartList:[],
@@ -182,6 +185,14 @@ export default {
         .catch(err => {
           this.resumeLoading = false
         })
+    },
+    //
+    handleOperationClick(){
+
+    },
+    //
+    handleStatusChange(){
+
     }
   },
   activated(){
@@ -343,5 +354,8 @@ export default {
         height 64px
         .chat-input
           background-color #fff
-          padding-left 5px
+        .send-message
+          position absolute
+          right 8px
+          top 8px
 </style>
