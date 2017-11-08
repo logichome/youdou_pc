@@ -64,6 +64,13 @@ Axios.interceptors.response.use( response => {
         })
         store.commit(SET_LOGIN_STEP,0)
         break;
+      case '10001':
+        localStorage.clear()
+        router.replace({
+          path: '/login'
+        })
+        store.commit(SET_LOGIN_STEP,0)
+        break;
     }
 
   }

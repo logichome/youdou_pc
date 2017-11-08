@@ -7,7 +7,7 @@
     </div>
     <div class="conversation-list" v-loading="listLoading">
       <ul>
-          <li class="conversation-item" v-for="(item,index) in conversationList" @click="$router.push('/main/conversation/'+item.theme_id)" :key="index">
+          <li class="conversation-item" v-for="(item,index) in conversationList" @click="handleConversationClick(item)" :key="index">
             <div class="border-box clearfix">
               <div class="conversation-item-hd fl">
                 <label :for="'item'+item.theme_id" class="check-box" v-show="operationShowed">
@@ -111,6 +111,13 @@ export default {
     },
     handleCurrentChange(page){
       this.$store.dispatch(GET_CONVERSATION_LIST,{page})
+    },
+    handleConversationClick(item){
+      if(this.operationShowed) return
+      this.$router.push({
+        path:'/main/conversation/'+ item.theme_id,
+        query:{user_id:item.user_id,job_id:item.job_id,resume_id:item.resume_id}
+      })
     }
   },
   computed:{
