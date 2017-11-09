@@ -24,7 +24,7 @@ let router =  new Router({
       children:[
         {
           path:'',
-          redirect:'resume'
+          redirect:'conversation'
         },
         ...resume,
         ...conversation,

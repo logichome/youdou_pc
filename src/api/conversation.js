@@ -30,3 +30,9 @@ export const getConversationResume = id => axios.get(API_ROOT + 'business/user_d
  * @param {*消息内容} message 
  */
 export const sendConversationMessage = message => axios.post(API_ROOT + 'chat/create',message)
+
+/**
+ * 面试/offer/未通过
+ * @param {*邀约信息} info 
+ */
+export const inviteOffer = info => axios.post(API_ROOT + 'interview/create',info)

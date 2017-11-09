@@ -138,6 +138,7 @@ export default {
   height 40px
   padding-left 10px
   background-color #fff
+  z-index 3
   .filter-options
   .operation
   .refresh

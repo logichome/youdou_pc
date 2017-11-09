@@ -70,27 +70,27 @@
             <i class="iconfont icon-manage"></i>
             <span>求职岗位：</span>
             <span v-if="jobInfo">{{jobInfo.job_name}}</span>
-            <div @click="handleRefresh" class="refresh fr">
+            <div @click="init" class="refresh fr">
               <i class="iconfont icon-shuaxin-"></i>
               <span>刷新</span>
             </div>
           </div>
           <div class="header-operation">
-            <button class="operation-button" @click="handleOperationClick(1)">
+            <button class="operation-button" :class="{active:isSuitable === '1'}" @click="handleOperationClick(1)">
               <i class="iconfont icon-Happy"></i>
               <span>合适</span>
             </button>
-            <button class="operation-button" @click="handleOperationClick(2)">
+            <button class="operation-button"  :class="{active:isSuitable === '2'}" @click="handleOperationClick(2)">
               <i class="iconfont icon-sad"></i>
               <span>不合适</span>
             </button>
-            <button class="operation-button" @click="handleOperationClick(3)">
+            <!-- <button class="operation-button" @click="handleOperationClick(3)">
               <i class="el-icon-check"></i>
               <span>已读</span>
-            </button>
+            </button> -->
             <div class="change-status fr">
-              <button class="change-status-button" @click="handleStatusChange">面试邀请</button>
-              <button class="change-status-button" @click="handleStatusChange">OFFER发放</button>
+              <button class="change-status-button" @click="handleStatusChange(3)">面试邀请</button>
+              <button class="change-status-button" @click="handleStatusChange(4)">OFFER发放</button>
             </div>
           </div>
         </div>
@@ -144,11 +144,14 @@
       </el-table>
     </el-dialog>
 
-
+    <el-dialog :visible.sync="inviteOfferVisible" width="370px">
+      <invite-offer ref="inviteOfferForm" v-if="resumeInfo" :form-type="inviteOfferType" :job-id="jobId" :user-id="receiveId" :user-name="resumeInfo.resume.name"></invite-offer>
+    </el-dialog>
 
   </div>
 </template>
 <script>
+import inviteOffer from '@/components/form/invite_offer'
 export default {
   data () {
     return {
@@ -156,12 +159,16 @@ export default {
       chatLoading:false,
       experienceVisble:false,
       educationVisible:false,
+      inviteOfferVisible:false,
+      inviteOfferType:0,
 
       inputMessage:'',
 
       themeId:'',
       businessId:'',
+      jobId:'',
       receiveId:'',
+      isSuitable:'0',
 
       resumeInfo:null,
       chartList:[],
@@ -169,17 +176,16 @@ export default {
 
       intervalTimer:null,
       canGetNew:true
+
     }
   },
   methods:{
-    //刷新
-    handleRefresh(){},
     //点击表格单行展开
     handleDialogRowClick(row, event, column){
       this.$refs[this.experienceVisble ? 'experienceTable' : 'educationTable'].toggleRowExpansion(row)
     },
     // 获取最新二十条消息
-    getInitChats(){
+    getInitChats(callback){
       this.$api.conversation.getConversationDetail(this.$route.query)
         .then(res => {
           this.chatLoading = false
@@ -189,7 +195,10 @@ export default {
             this.chartList = res.data.data.chats
             this.themeId =  res.data.data.theme_id
             this.businessId = res.data.data.business_id
+            this.jobId = res.data.data.job_id
             this.receiveId = res.data.data.userInfo.user_id
+            this.isSuitable = res.data.data.suitable
+            callback && callback()
           }
         })
         .catch(err => {
@@ -214,16 +223,38 @@ export default {
     init(){
       this.resumeLoading = true
       this.chatLoading = true
-      this.getInitChats()
+      this.getInitChats(() => {
+        this.jumpToChatsBottom()
+      })
       this.getResumeDetail()
     },
     //操作是否合适
-    handleOperationClick(){
+    handleOperationClick(status){
+      if(status == this.isSuitable) return
+      this.$confirm('确定将该求职者状态改为'+ (status === '1' ? '合适' : '不合适') + '吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'success'
+      })
+        .then(() => {
+          this.$api.conversation.updateConversationState({
+            status,
+            list:[{
+              theme_id:this.themeId,
+              job_id:this.jobId,
+              user_id:this.receiveId
+            }]
+          })
+        })
 
     },
     //操作面试offer
-    handleStatusChange(){
-
+    handleStatusChange(type){
+      this.inviteOfferVisible = true
+      this.inviteOfferType = type
+      this.$nextTick(() => {
+        this.$refs.inviteOfferForm && this.$refs.inviteOfferForm.init()
+      })
     },
     //发送消息
     handleMessageSend(){
@@ -242,6 +273,7 @@ export default {
       this.timer = setInterval(() => {
         if(this.canGetNew) {
           this.canGetNew = false
+          let ListLength = this.chartList.length
           let lastReadChat = ''
           let list = []
           for(let item of this.chartList){
@@ -262,6 +294,10 @@ export default {
                 this.canGetNew = true
                 if(res.data.error === '0'){
                   this.chartList = list.concat(res.data.data.chats)
+                  this.isSuitable = res.data.data.suitable
+                  if(this.chartList.length > ListLength){
+                    this.jumpToChatsBottom()
+                  }
                 }
               })
               .catch(err => {
@@ -271,10 +307,13 @@ export default {
             this.getInitChats()
           } 
         }
-      },3000)
+      },1000)
     },
+    //消息记录跳到底部
     jumpToChatsBottom(){
-      this.$refs.chatList[this.$refs.chatList.length-1].scrollIntoView()
+      this.$nextTick(() => {
+        this.$refs.chatList[this.$refs.chatList.length-1].scrollIntoView()
+      })
     }
   },
   activated(){
@@ -283,6 +322,9 @@ export default {
   },
   deactivated(){
     clearInterval(this.timer)
+  },
+  components:{
+    inviteOffer
   }
 }
 </script>
@@ -395,7 +437,10 @@ export default {
             margin-left 10px
             background-color rgb(247, 247, 247)
             &:hover
+            &.active
               background-color rgb(200,200,200)
+            &.active
+              cursor default
           .operation-button:nth-of-type(1)
             i
               color green
@@ -517,4 +562,7 @@ export default {
           font-size 16px
           color #fff
           background-color #e75f15
+</style>
+<style lang="stylus">
+
 </style>

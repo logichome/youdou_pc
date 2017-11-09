@@ -8,40 +8,40 @@
     <div class="conversation-list" v-loading="listLoading">
       <ul>
           <li class="conversation-item" v-for="(item,index) in conversationList" @click="handleConversationClick(item)" :key="index">
-            <div class="border-box clearfix">
-              <div class="conversation-item-hd fl">
-                <label :for="'item'+item.theme_id" class="check-box" v-show="operationShowed">
-                  <input v-model="checkboxResult[index]" :id="'item'+item.theme_id" type="checkbox" :data-index="index" @change="handleSelectChange"></input>
-                </label>
-                <div class="avatar" :style="'background-image:url('+item.header_url+')'">
-                  <i v-show="!item.header_url" class="iconfont icon-personal"></i>
+            <label  :for="'item'+item.theme_id">
+              <div class="border-box clearfix">
+                <div class="conversation-item-hd fl">
+                  <div class="check-box" v-show="operationShowed">
+                    <input v-model="checkboxResult[index]" :id="'item'+item.theme_id" type="checkbox" :data-index="index" @change="handleSelectChange"></input>
+                  </div>
+                  <div class="avatar" :style="'background-image:url('+item.header_url+')'">
+                    <i v-show="!item.header_url" class="iconfont icon-personal"></i>
+                  </div>
+                </div>
+                <div class="conversation-item-bd fl">
+                  <div class="base-info">
+                    <span>{{item.name}}/</span>
+                    <span>{{item.sex}}/</span>
+                    <span>{{item.age}}/</span>
+                    <span>{{item.education}}/</span>
+                    <span>{{item.job_age}}年工作经验</span>
+                    <span class="tag" v-for="(tag,tagIndex) in item.tag" :key="tagIndex">{{tag.text}}</span>
+                  </div>
+                  <div class="last-message">
+                    <span>{{item.chat_content}}</span>
+                  </div>
+                </div>
+                <div class="conversation-item-ft fr">
+                  <div class="message-info">
+                    <span :class="item.is_read === '1' ? 'is-read-true':'is-read-false'" class="is-read">{{item.is_read === '1' ? '已读' : '未读'}}</span>
+                    <span class="last-time">{{item.update_at}}</span>
+                  </div>
+                  <div class="job-name">
+                    <span>{{item.job_name}}</span>
+                  </div>
                 </div>
               </div>
-              <div class="conversation-item-bd fl">
-                <div class="base-info">
-                  <span>{{item.name}}/</span>
-                  <span>{{item.sex}}/</span>
-                  <span>{{item.age}}/</span>
-                  <span>{{item.education}}/</span>
-                  <span>{{item.job_age}}年工作经验</span>
-                  <span class="tag" v-for="(tag,tagIndex) in item.tag" :key="tagIndex">{{tag.text}}</span>
-                </div>
-                <div class="last-message">
-                  <span>{{item.chat_content}}</span>
-                </div>
-              </div>
-              <div class="conversation-item-ft fr">
-                <div class="message-info">
-                  <span :class="item.is_read === '1' ? 'is-read-true':'is-read-false'" class="is-read">{{item.is_read === '1' ? '已读' : '未读'}}</span>
-                  <span class="last-time">{{item.update_at}}</span>
-                </div>
-                <div class="job-name">
-                  <span>{{item.job_name}}</span>
-                </div>
-              
-              
-              </div>
-            </div>
+            </label>
           </li> 
       </ul>
     </div>
