@@ -24,3 +24,9 @@ export const getConversationDetail = info => axios.get(API_ROOT + 'interview/cha
  * @param {*简历id} id 
  */
 export const getConversationResume = id => axios.get(API_ROOT + 'business/user_detail',{params:id})
+
+/**
+ * 发送消息
+ * @param {*消息内容} message 
+ */
+export const sendConversationMessage = message => axios.post(API_ROOT + 'chat/create',message)

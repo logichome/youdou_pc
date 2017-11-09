@@ -95,11 +95,22 @@
           </div>
         </div>
         <div class="chat-list-box">
-          <div class="chat-list"></div>
+          <div class="chat-list">
+            <ul>
+              <li class="chat-item"  ref="chatList" v-for="(item,index) in chartList" :key="index">
+                <div class="chat-avatar" :style="'background-image:url('+item.sender_header_url+')'"></div>
+                <div class="chat-message" :class="{'chat-message-self':item.send_role === '2'}">
+                  <i class="chat-arrow"></i>
+                  <span>{{item.chat_content}}</span>
+                  <span class="chat-is-read" :style="'background-color:'+(item.is_read === '1' ? '#67C23A' : '#FA5555')">{{item.is_read === '1' ? '已读' : '未读'}}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="chat-input-box">
-          <el-input class="chat-input" v-model="inputMessage" placeholder="请输入内容"></el-input>
-          <button class="send-message">发送</button>
+        <div class="chat-input-box"  @keydown.enter="handleMessageSend" >
+          <el-input class="chat-input"v-model="inputMessage" placeholder="请输入内容"></el-input>
+          <button @click="handleMessageSend" class="send-message">发 送</button>
         </div>
       </div>
 
@@ -148,9 +159,16 @@ export default {
 
       inputMessage:'',
 
+      themeId:'',
+      businessId:'',
+      receiveId:'',
+
       resumeInfo:null,
       chartList:[],
-      jobInfo:null
+      jobInfo:null,
+
+      intervalTimer:null,
+      canGetNew:true
     }
   },
   methods:{
@@ -160,21 +178,27 @@ export default {
     handleDialogRowClick(row, event, column){
       this.$refs[this.experienceVisble ? 'experienceTable' : 'educationTable'].toggleRowExpansion(row)
     },
-    // 初始化信息
-    init(){
-      this.resumeLoading = true
-      this.chatLoading = true
+    // 获取最新二十条消息
+    getInitChats(){
       this.$api.conversation.getConversationDetail(this.$route.query)
         .then(res => {
           this.chatLoading = false
+          this.canGetNew = true
           if(res.data.error === '0') {
             this.jobInfo = res.data.data.jobInfo
             this.chartList = res.data.data.chats
+            this.themeId =  res.data.data.theme_id
+            this.businessId = res.data.data.business_id
+            this.receiveId = res.data.data.userInfo.user_id
           }
         })
         .catch(err => {
+          this.canGetNew = true
           this.chatLoading = false
         })
+    },
+    //获取简历信息
+    getResumeDetail(){
       this.$api.conversation.getConversationResume({resume_id: this.$route.query.resume_id})
         .then(res => {
           this.resumeLoading = false
@@ -186,17 +210,79 @@ export default {
           this.resumeLoading = false
         })
     },
-    //
+    // 初始化信息
+    init(){
+      this.resumeLoading = true
+      this.chatLoading = true
+      this.getInitChats()
+      this.getResumeDetail()
+    },
+    //操作是否合适
     handleOperationClick(){
 
     },
-    //
+    //操作面试offer
     handleStatusChange(){
 
+    },
+    //发送消息
+    handleMessageSend(){
+      this.$api.conversation.sendConversationMessage({
+        business_id:this.businessId,
+        theme_id:this.themeId,
+        type:1,
+        content:this.inputMessage,
+        receive_id:this.receiveId,
+        receive_role:1
+      })
+      this.inputMessage = ''
+    },
+    //获取新消息
+    setNewMessageInterval(){
+      this.timer = setInterval(() => {
+        if(this.canGetNew) {
+          this.canGetNew = false
+          let lastReadChat = ''
+          let list = []
+          for(let item of this.chartList){
+            if(item.is_read === '0'){
+              break
+            }
+            lastReadChat = item.chat_id
+            list.push(item)
+          }
+
+          if(lastReadChat){
+            this.$api.conversation.getConversationDetail({
+              pull_way:1,
+              chat_id:lastReadChat,
+              ...this.$route.query
+            })
+              .then(res => {
+                this.canGetNew = true
+                if(res.data.error === '0'){
+                  this.chartList = list.concat(res.data.data.chats)
+                }
+              })
+              .catch(err => {
+                this.canGetNew = true
+              })
+          } else {
+            this.getInitChats()
+          } 
+        }
+      },3000)
+    },
+    jumpToChatsBottom(){
+      this.$refs.chatList[this.$refs.chatList.length-1].scrollIntoView()
     }
   },
   activated(){
     this.init()
+    this.setNewMessageInterval()
+  },
+  deactivated(){
+    clearInterval(this.timer)
   }
 }
 </script>
@@ -340,15 +426,82 @@ export default {
         padding-top 100px
         padding-bottom 60px
         .chat-list
+          box-sizing border-box
+          padding 0 20px
           width 100%
           height 100%
           overflow auto
+          &::-webkit-scrollbar-thumb{
+            width: 10px
+            height: 20px;
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+            background-color: #364150;
+          }
+          &::-webkit-scrollbar-track{
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+            border-radius: 5px;
+            background-color: #fff;
+          }
+          &::-webkit-scrollbar{
+            width: 10px;
+            height: 10px;
+            box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+            background-color: #fff;
+          }
+          .chat-item
+            position relative
+            line-height 80px
+            padding 0 60px 0 80px
+            .chat-avatar
+              position absolute
+              top 15px
+              left 0
+              width 50px
+              height 50px
+              overflow hidden
+              background-size cover
+              background-position center
+              border-radius 50%
+              background-color #ccc
+            .chat-message
+              position relative
+              display inline-block
+              border-radius 4px
+              padding 10px 15px
+              box-sizing border-box
+              line-height 30px
+              color #fff
+              word-wrap:break-word
+              background-color #e75f15
+              .chat-arrow
+                position absolute
+                left -10px
+                top 15px
+                width: 0;
+                height: 0;
+                border-top: 10px solid transparent;
+                border-right: 20px solid #e75f15;
+                border-bottom: 10px solid transparent;
+              &.chat-message-self
+                background-color rgb(247, 247, 247)
+                color #000
+                .chat-arrow
+                  border-right: 20px solid rgb(247, 247, 247)
+            .chat-is-read
+              position absolute
+              top 0
+              right -50px
+              border-radius 2px
+              line-height 20px
+              color #fff
+              padding 0 5px
       .chat-input-box
         position absolute
         background-color rgb(247, 247, 247)
         width 100%
         box-sizing border-box
-        padding 8px 100px 8px 10px
+        padding 12px 100px 12px 10px
         bottom 0
         left 0
         height 64px
@@ -356,6 +509,12 @@ export default {
           background-color #fff
         .send-message
           position absolute
-          right 8px
-          top 8px
+          right 12px
+          top 12px
+          border-radius 4px
+          width 84px
+          height 40px
+          font-size 16px
+          color #fff
+          background-color #e75f15
 </style>
