@@ -1,5 +1,5 @@
 <template>
-  <div class="invite-offer">
+  <div class="invite-offer" v-loading="submitLoading" element-loading-text="正在提交">
   <h4>
     <span v-show="form.status == 3">面试邀约</span>
     <span v-show="form.status == 4">offer发放</span>
@@ -29,7 +29,7 @@
         <el-input type="textarea" :autosize="{minRows: 3, maxRows: 6}" resize="none" placeholder="面试未通过理由" v-model="form.remark"></el-input>
       </el-form-item>
     </el-form>
-    <button @click="submit">提交</button>
+    <button @click="validate">提交</button>
     <button class="no-pass" v-show="form.status == 4" @click="handleNoPass">面试未通过</button>
   <el-dialog append-to-body width="900px" title="选择地址" :visible.sync="mapVisible">
     <div class="map-dialog">
@@ -45,6 +45,8 @@ export default {
   props:['formType','jobId','userId','userName'],
   data () {
     return {
+      submitLoading:false,
+
       mapVisible:false,
 
       noPassVisble:false,
@@ -113,12 +115,12 @@ export default {
       this.noPassVisble = true
       this.form.status = 5
     },
-    //提交表单
-    submit(){
+    //验证表单
+    validate(){
       if(!this.noPassVisble){
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.$api.conversation.inviteOffer(this.form)
+            this.submit()
           } else {
             return false;
           }
@@ -128,9 +130,25 @@ export default {
           type:'error',
           message:'请填写面试不通过的理由'
         })
-        this.$api.conversation.inviteOffer(this.form)
+        this.submit()
       }
-
+    },
+    submit(){
+      this.submitLoading = true
+      this.$api.conversation.inviteOffer(this.form)
+        .then(res => {
+          this.submitLoading = false
+          if(res.data.error === '0'){
+            this.$emit('success')
+            this.$message({
+              type:'success',
+              message:'操作成功！'
+            })
+          }
+        })
+        .catch(err => {
+          this.submitLoading = false
+        })
     }
   },
   mounted(){

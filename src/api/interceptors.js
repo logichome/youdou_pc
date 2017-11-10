@@ -2,6 +2,7 @@ import Axios from 'axios'
 import { Message } from 'element-ui';
 import store from '@/vuex/store'
 import { SET_LOGIN_STEP } from '@/vuex/mutations_types'
+import router from '@/router'
 
 function getXtoken() {
   return localStorage.YOUDOU_PC_TOKEN

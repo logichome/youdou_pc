@@ -145,7 +145,7 @@
     </el-dialog>
 
     <el-dialog :visible.sync="inviteOfferVisible" width="370px">
-      <invite-offer ref="inviteOfferForm" v-if="resumeInfo" :form-type="inviteOfferType" :job-id="jobId" :user-id="receiveId" :user-name="resumeInfo.resume.name"></invite-offer>
+      <invite-offer @success="handleInviteOfferSuccess" ref="inviteOfferForm" v-if="resumeInfo" :form-type="inviteOfferType" :job-id="jobId" :user-id="receiveId" :user-name="resumeInfo.resume.name"></invite-offer>
     </el-dialog>
 
   </div>
@@ -255,6 +255,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.inviteOfferForm && this.$refs.inviteOfferForm.init()
       })
+    },
+    handleInviteOfferSuccess(){
+      this.inviteOfferVisible = false
     },
     //发送消息
     handleMessageSend(){
