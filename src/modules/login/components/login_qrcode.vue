@@ -3,20 +3,24 @@
     <div class="login-title">登陆</div>
     <div class="login-desc">使用有豆招聘APP扫码登录</div>
     <div class="qrcode">
-      <img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=1062989499,1682648318&fm=58" alt="">
+      <img :src="qrcodeUrl" alt="">
     </div>
   </div>
 </template>
 <script>
+import {GET_QRCODE_URL} from '@/vuex/actions_types'
 export default {
   data () {
     return {
     }
   },
-  methods:{
-    submit(){
-      
+  computed:{
+    qrcodeUrl(){
+      return this.$store.state.login.qrcode_url
     }
+  },
+  created(){
+    this.$store.dispatch(GET_QRCODE_URL)
   }
 }
 </script>

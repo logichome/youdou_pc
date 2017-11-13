@@ -6,13 +6,15 @@ import {
   SET_TEMP_INFO,
   UPDATE_FORM_OPTION,
   UPDATE_JOB_FORM_OPTION,
-  UPDATE_LOGIN_LOADING
+  UPDATE_LOGIN_LOADING,
+  SET_QRCODE_URL
 } from '@/vuex/mutations_types'
 
 import {
   INIT_LOGIN,
   INIT_USER_INFO,
-  LOG_OUT
+  LOG_OUT,
+  GET_QRCODE_URL
 } from '@/vuex/actions_types'
 
 import api from '@/api'
@@ -26,7 +28,8 @@ const state = {
   u_id:'',
   token:'',
   tempBaseInfo:{},
-  userInfo:{}
+  userInfo:{},
+  qrcode_url:''
 }
 
 const mutations = {
@@ -58,6 +61,10 @@ const mutations = {
   //设置临时表单信息
   [SET_TEMP_INFO](state, info){
     state.tempBaseInfo = info
+  },
+  //设置二维码地址
+  [SET_QRCODE_URL](state, url) {
+    state.qrcode_url = url
   }
 }
 
@@ -127,6 +134,17 @@ const actions = {
     commit(UPDATE_LOGIN_STATE,false)
     commit(SET_LOGIN_STEP,0)
     router.replace('/login')
+  },
+
+  //获取二维码笛子
+  [GET_QRCODE_URL]({commit}){
+    api.login.getQrcodeImg()
+      .then(res => {
+        if(res.data.error === '0'){
+          commit(SET_QRCODE_URL,res.data.data.img)
+        }
+      })
+    
   }
 }
 

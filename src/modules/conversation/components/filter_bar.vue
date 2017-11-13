@@ -136,7 +136,7 @@ export default {
   width: 100%;
   left: 0;
   height 40px
-  padding-left 10px
+  padding 0 10px
   background-color #fff
   z-index 3
   .filter-options

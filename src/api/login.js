@@ -59,3 +59,8 @@ export const uploadCompanyImg = (formData,onUploadProgress) => axios({
   headers: {'Content-Type': 'multipart/form-data'},
   onUploadProgress
 })
+
+/**
+ * 获取登陆二维码
+ */
+export const getQrcodeImg = () => axios.get(API_ROOT + 'companyuser/qrcode')

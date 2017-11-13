@@ -100,7 +100,7 @@ export default {
     // 处理刷新
     handleRefresh(){
       this.loading = true
-      this.$api.jobManage.getJobManageList(this.filter)
+      this.$api.workManage.getWorkManageList(this.filter)
         .then(res => {
           this.loading = false
           if(res.data.error === '0'){

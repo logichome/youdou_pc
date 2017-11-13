@@ -1,18 +1,19 @@
 <template>
   <div class="job-manage">
-        <div class="nav-bar">
+    <div class="nav-bar">
       <ul>
-        <router-link to="/main/job_manage/interview" tag="li">
-          <i class="iconfont icon-xingzhuang"></i>
-          <span>面试</span>
+        <router-link to="/main/job_manage/on_job" tag="li">
+          <i class="iconfont icon-iconfonttiquliuliang1"></i>
+          <span>已上架</span>
           <i class="el-icon-arrow-right"></i>
         </router-link>
-        <router-link to="/main/job_manage/offer" tag="li">
-          <i class="iconfont icon-offer"></i>
-          <span>offer</span>
+        <router-link to="/main/job_manage/off_job" tag="li">
+          <i class="iconfont icon-down"></i>
+          <span>已下架</span>
           <i class="el-icon-arrow-right"></i>
         </router-link>
       </ul>
+      <button class="new-job">发布职位</button>
     </div>
     <div class="job-manage-content">
       <keep-alive>
@@ -70,6 +71,16 @@ export default {
           left auto
           text-align right
           right 6px
+    .new-job
+      display block
+      cursor pointer
+      width 100px
+      height 30px
+      margin 10px auto
+      line-height 30px
+      background-color #e75f15
+      color #fff
+      border-radius 4px
   .job-manage-content
     height 100%
     padding-left 120px
