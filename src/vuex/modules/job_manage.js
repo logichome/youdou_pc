@@ -52,6 +52,9 @@ const actions = {
         if(res.data.error === '0'){
           commit(UPDATE_JOB_LIST,res.data.data.list)
           commit(UPDATE_JOB_TOTAL,res.data.data.count)
+        } else {
+          commit(UPDATE_JOB_LIST,[])
+          commit(UPDATE_JOB_TOTAL,0)
         }
         commit(SET_JOB_LIST_LOADING,false)
       })

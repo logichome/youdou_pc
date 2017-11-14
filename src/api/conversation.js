@@ -36,3 +36,9 @@ export const sendConversationMessage = message => axios.post(API_ROOT + 'chat/cr
  * @param {*邀约信息} info 
  */
 export const inviteOffer = info => axios.post(API_ROOT + 'interview/create',info)
+
+/**
+ * 获取新人数量
+ */
+
+ export const getNewPeopleCount = () => axios.get(API_ROOT + 'communicate/numbers')

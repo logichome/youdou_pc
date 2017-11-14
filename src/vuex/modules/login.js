@@ -7,14 +7,17 @@ import {
   UPDATE_FORM_OPTION,
   UPDATE_JOB_FORM_OPTION,
   UPDATE_LOGIN_LOADING,
-  SET_QRCODE_URL
+  SET_QRCODE_URL,
+  SET_QR_TIMER,
+  SET_QR_SCODE
 } from '@/vuex/mutations_types'
 
 import {
   INIT_LOGIN,
   INIT_USER_INFO,
   LOG_OUT,
-  GET_QRCODE_URL
+  GET_QRCODE_URL,
+  SET_QR_INTERVAL
 } from '@/vuex/actions_types'
 
 import api from '@/api'
@@ -29,7 +32,9 @@ const state = {
   token:'',
   tempBaseInfo:{},
   userInfo:{},
-  qrcode_url:''
+  qrcode_url:'',
+  scode:'',
+  qrTimer:null
 }
 
 const mutations = {
@@ -65,15 +70,23 @@ const mutations = {
   //设置二维码地址
   [SET_QRCODE_URL](state, url) {
     state.qrcode_url = url
+  },
+  //设置二维码定时器
+  [SET_QR_TIMER](state, timer){
+    state.timer = timer || null
+  },
+  //设置二维码解析码
+  [SET_QR_SCODE](state, scode){
+    state.scode = scode
   }
 }
 
 const actions = {
   //初始化登陆信息
-  [INIT_LOGIN]({commit,dispatch}, loginInfo) {
+  [INIT_LOGIN]({state, commit, dispatch}, loginInfo) {
     commit(UPDATE_LOGIN_STATE,true)
     commit(SET_LOGIN_INFO,loginInfo)
-
+    clearInterval(state.timer)
     //如果已完善信息则获取公司信息
     if(loginInfo.is_business === '1'){
       dispatch(INIT_USER_INFO)
@@ -137,14 +150,28 @@ const actions = {
   },
 
   //获取二维码笛子
-  [GET_QRCODE_URL]({commit}){
+  [GET_QRCODE_URL]({commit, dispatch}){
     api.login.getQrcodeImg()
       .then(res => {
         if(res.data.error === '0'){
+          commit(SET_QR_SCODE,res.data.data.scode)
           commit(SET_QRCODE_URL,res.data.data.img)
+          dispatch(SET_QR_INTERVAL)
         }
       })
-    
+  },
+
+  //轮询QRCODE
+  [SET_QR_INTERVAL]({state, commit, dispatch}){
+    let timer = setInterval(() => {
+      api.login.askQrLogin({scode:state.scode})
+        .then(res => {
+          if(res.data.error === '0'){
+            dispatch(INIT_LOGIN,res.data.data)
+          }
+        })
+    },2500)
+    commit(SET_QR_TIMER,timer)
   }
 }
 

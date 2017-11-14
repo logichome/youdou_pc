@@ -8,6 +8,7 @@ import conversation from './conversation'
 import workManage from './work_manage'
 import jobManage from './job_manage'
 import store from '@/vuex/store'
+import {GET_CONVERSATION_NEW_COUNT} from '@/vuex/actions_types'
 Vue.use(Router)
 
 let router =  new Router({
@@ -36,8 +37,10 @@ let router =  new Router({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-
-// })
+router.afterEach((to, from) => {
+  if(store.state.login.loginState){
+    store.dispatch(GET_CONVERSATION_NEW_COUNT)
+  }
+})
 
 export default router

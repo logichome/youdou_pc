@@ -6,6 +6,9 @@ export const SET_USER_INFO = 'SET_USER_INFO';
 export const SET_TEMP_INFO = 'SET_TEMP_INFO';
 export const UPDATE_LOGIN_LOADING = 'UPDATE_LOGIN_LOADING';
 export const SET_QRCODE_URL = 'SET_QRCODE_URL';
+export const SET_QR_TIMER = 'SET_QR_TIMER';
+export const SET_QR_SCODE = 'SET_QR_SCODE';
+
 
 
 //option

@@ -7,7 +7,8 @@ import {
 } from '@/vuex/mutations_types'
 
 import {
-  GET_CONVERSATION_LIST
+  GET_CONVERSATION_LIST,
+  GET_CONVERSATION_NEW_COUNT  
 } from '@/vuex/actions_types'
 
 import api from '@/api'
@@ -25,7 +26,7 @@ const state = {
     page:1
   },
   total:0,
-  newConut:0
+  newCount:0
 }
 
 const mutations = {
@@ -70,6 +71,14 @@ const actions = {
         console.error(err)
         commit(SET_CONVERSATION_LIST_LOADING,false)
       })
+  },
+  [GET_CONVERSATION_NEW_COUNT]({state,commit}) {
+      api.conversation.getNewPeopleCount()
+        .then(res => {
+          if(res.data.error === '0'){
+            commit(UPDATE_CONVERSATION_NEW_COUNT,res.data.data.new_people)
+          }
+        })
   }
 }
 

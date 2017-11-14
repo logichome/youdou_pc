@@ -38,7 +38,7 @@
           </div>
           <div class="interview-progress">
             <div class="interview-progress-box">
-              <div class="interview-progress-value"></div>
+              <div class="interview-progress-value" :style="'width:'+item.percentage+';background-color:'+(item.percentage == '100%' ? '#FA5555' : '')"></div>
             </div>
           </div>
           <div class="interview-operation pa">
@@ -223,7 +223,6 @@ export default {
             width auto
             .interview-progress-value
               background-color rgb(51, 153, 255)
-              width 50%
               height 100%
         .interview-operation
           width 50px

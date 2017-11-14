@@ -13,7 +13,7 @@
           <i class="el-icon-arrow-right"></i>
         </router-link>
       </ul>
-      <button class="new-job">发布职位</button>
+      <button class="new-job" @click="addNewJob">发布职位</button>
     </div>
     <div class="job-manage-content">
       <keep-alive>
@@ -23,9 +23,16 @@
   </div>
 </template>
 <script>
+import aa from '../../conversation/components/conversation'
 export default {
   data () {
     return {
+      newJobFromVisble:false
+    }
+  },
+  methods:{
+    addNewJob(){
+      this.newJobFromVisble = true
     }
   }
 }

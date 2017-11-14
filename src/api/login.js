@@ -64,3 +64,8 @@ export const uploadCompanyImg = (formData,onUploadProgress) => axios({
  * 获取登陆二维码
  */
 export const getQrcodeImg = () => axios.get(API_ROOT + 'companyuser/qrcode')
+
+/**
+ * 轮询二维码登陆状态
+ */
+export const askQrLogin = scode => axios.post(API_ROOT + 'companyuser/polling', scode)

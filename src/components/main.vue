@@ -34,6 +34,8 @@
             <router-link to="/main/conversation" tag="li">
               <i class="iconfont icon-communicatesolid"></i>
               <span>沟通</span>
+              <span class="new-count"  v-show="newCount > 0">{{newCount}}</span>
+              <span class="new-count-point"  v-show="newCount > 0"></span>
             </router-link>
           </ul>
         </div>
@@ -57,7 +59,8 @@ export default {
     ...mapState({
       userName: state => state.login.userInfo.user_person,
       avatar: state => state.login.userInfo.logo,
-      loginState: state => state.login.loginState
+      loginState: state => state.login.loginState,
+      newCount: state => state.conversation.newCount
     })
   },
   methods:{
@@ -171,6 +174,24 @@ export default {
             font-size 18px
             color #666
             line-height 40px
+          .new-count
+            position absolute
+            top 10px
+            right 30px
+            padding 0 5px
+            border-radius 4px
+            line-height 20px
+            font-size 12px
+            background-color #666
+            color rgb(195, 206, 221);
+          .new-count-point
+            position absolute
+            left 30px
+            top 8px
+            background-color #FA5555
+            border-radius 50%
+            width 8px
+            height 8px
   .main-body
     height 100%
     box-sizing border-box
