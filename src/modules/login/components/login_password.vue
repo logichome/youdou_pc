@@ -56,6 +56,12 @@ export default {
                 if(res.data.error === '0'){
                   this.$store.dispatch(INIT_LOGIN,res.data.data)
                 }
+                else{
+                  this.$store.commit(UPDATE_LOGIN_LOADING,true)
+                }
+              })
+              .catch(err => {
+                this.$store.commit(UPDATE_LOGIN_LOADING,true)
               })
           } else {
             return false;

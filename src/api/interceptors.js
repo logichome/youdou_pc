@@ -52,8 +52,10 @@ Axios.interceptors.response.use( response => {
     })
     return response
   }
-  // 0为正常，10061为二维码登陆未授权
-  if (response.data.error !== '0' && response.data.error !== '10061') {
+  // 0为正常，10061为二维码登陆未授权，10061为二维码已过期
+  if (response.data.error !== '0' 
+  && response.data.error !== '10061'
+  && response.data.error !== '10062') {
     Message({
       message: response.data.msg,
       type: 'error'

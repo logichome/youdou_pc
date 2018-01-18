@@ -149,7 +149,7 @@ const actions = {
     router.replace('/login')
   },
 
-  //获取二维码笛子
+  //获取二维码图片
   [GET_QRCODE_URL]({commit, dispatch}){
     api.login.getQrcodeImg()
       .then(res => {
@@ -168,7 +168,13 @@ const actions = {
         .then(res => {
           if(res.data.error === '0'){
             dispatch(INIT_LOGIN,res.data.data)
+          } else if (res.data.error === '10062'){
+            clearInterval(state.timer)
+            dispatch(GET_QRCODE_URL)
           }
+        })
+        .catch(err => {
+          clearInterval(state.timer)
         })
     },2500)
     commit(SET_QR_TIMER,timer)

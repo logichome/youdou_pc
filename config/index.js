@@ -34,6 +34,7 @@ module.exports = {
     proxyTable: {
       '/api': {
         // target: 'https://demo.youdou.com',
+        // target: 'https://youdou.taorenke.com',
         target: 'http://192.168.199.191',
         changeOrigin: true,
         secure: false,
