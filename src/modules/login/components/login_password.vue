@@ -57,11 +57,11 @@ export default {
                   this.$store.dispatch(INIT_LOGIN,res.data.data)
                 }
                 else{
-                  this.$store.commit(UPDATE_LOGIN_LOADING,true)
+                  this.$store.commit(UPDATE_LOGIN_LOADING,false)
                 }
               })
               .catch(err => {
-                this.$store.commit(UPDATE_LOGIN_LOADING,true)
+                this.$store.commit(UPDATE_LOGIN_LOADING,false)
               })
           } else {
             return false;

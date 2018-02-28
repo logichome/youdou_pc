@@ -1,6 +1,7 @@
 import {
   UPDATE_FORM_OPTION,
-  UPDATE_JOB_FORM_OPTION
+  UPDATE_JOB_FORM_OPTION,
+  UPDATE_CITY_OPTION
 } from '@/vuex/mutations_types'
 
 const state = {
@@ -11,7 +12,8 @@ const state = {
   experience:[],
   education:[],
   treatment:[],
-  category:[]
+  category:[],
+  addressOptions:[]
 }
 
 const mutations = {
@@ -27,6 +29,9 @@ const mutations = {
     state.education = options.education
     state.treatment = options.treatment
     state.category = options.category
+  },
+  [UPDATE_CITY_OPTION](state,option) {
+    state.addressOptions = option
   }
 }
 

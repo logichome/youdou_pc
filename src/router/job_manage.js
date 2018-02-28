@@ -1,5 +1,6 @@
 import jobManage from '@/modules/job_manage/components/job_manage'
 import jobList from '@/modules/job_manage/components/job_list'
+import newJob from '@/modules/job_manage/components/new_job'
 
 import store from '@/vuex/store'
 import { GET_JOB_MANAGE_LIST } from '@/vuex/actions_types'
@@ -37,6 +38,11 @@ export default [
       {
         path:'off_job',
         component:jobList,
+        beforeEnter
+      },
+      {
+        path:'new_job',
+        component:newJob,
         beforeEnter
       },
     ]

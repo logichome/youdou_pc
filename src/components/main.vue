@@ -126,7 +126,7 @@ export default {
         background-color #666
         border-radius 50%
         overflow hidden
-        cursor pointer
+        // cursor pointer
         i
           font-size 26px
       .user-name

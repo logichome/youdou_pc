@@ -13,7 +13,7 @@
           <i class="el-icon-arrow-right"></i>
         </router-link>
       </ul>
-      <button class="new-job" @click="addNewJob">发布职位</button>
+      <router-link tag="button" to="/main/job_manage/new_job" class="new-job" @click="addNewJob">发布职位</router-link>
     </div>
     <div class="job-manage-content">
       <keep-alive>
