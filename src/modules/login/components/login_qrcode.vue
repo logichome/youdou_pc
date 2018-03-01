@@ -1,7 +1,7 @@
 <template>
   <div class="login-qrcode">
     <div class="login-title">登陆</div>
-    <div class="login-desc">使用有豆招聘APP扫码登录</div>
+    <div class="login-desc">使用有豆企业端小程序扫码登录</div>
     <div class="qrcode">
       <img :src="qrcodeUrl" alt="">
     </div>

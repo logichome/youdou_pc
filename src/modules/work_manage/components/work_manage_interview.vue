@@ -16,6 +16,7 @@
       </div>
     </div>
     <div class="interview-list" v-loading="loading">
+      <div class="empty" v-show="!list.length">暂无数据</div>
       <ul>
         <li v-for="(item,index) in list" :key="index">
           <div class="avatar pa" :style="'background-image:url('+item.header_url+')'"></div>
@@ -178,6 +179,9 @@ export default {
         line-height 40px
         font-size 28px
   .interview-list
+    .empty
+      text-align center
+      padding 20px 0
     ul
       li
         height 50px

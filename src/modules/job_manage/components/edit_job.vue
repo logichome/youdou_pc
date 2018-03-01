@@ -1,5 +1,5 @@
 <template>
-  <div class="new-job">
+  <div class="edit-job">
     <div class="form" v-loading="submitLoading">
       <el-form ref="form" :rules="rules" :model="form" label-width="80px">
         <el-form-item label="职位名称" prop="job_name">
@@ -75,7 +75,7 @@
       </el-form>
     </div>
     <div class="submit-box">
-      <button class="primary-button" :disabled="submitLoading" @click="submit">创建职位</button>
+      <button class="primary-button" :disabled="submitLoading" @click="submit">提交修改</button>
     </div>
     <el-dialog width="900px" title="选择工作地址" :visible.sync="mapVisible">
       <div class="map-dialog">
@@ -90,7 +90,6 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      needInit:false,
       mapVisible:false,
       submitLoading:false,
       form:{
@@ -118,7 +117,9 @@ export default {
       optionRadio:{
         salaryRadio:0,
         numberRadio:0
-      }
+      },
+      sexOption:[{name:'不限',value:0},{name:'男',value:1},{name:'女',value:2}],
+      jobTypeOption:[{name:'不限',value:0},{name:'全职',value:1},{name:'兼职',value:2}]
     }
   },
   computed:{
@@ -157,21 +158,26 @@ export default {
         if (valid) {
           let form = JSON.parse(JSON.stringify(this.form))
           if(!this.optionRadio.numberRadio){
-            form.number = 0
+            form.number = ''
           }
           form.category = form.category[form.category.length-1]
           form.business_id = this.$store.state.login.userInfo.business_id
+          form.job_id = this.$route.params.id
+          if(!form.longitude || !form.latitude){
+            delete form.longitude
+            delete form.latitude
+          }
+          this.Convert_BD09_To_GCJ02(form)
           this.submitLoading = true
-          this.$api.jobManage.createJob(form)
+          this.$api.jobManage.editJobInfo(form)
             .then(res => {
               this.submitLoading = false
               if(res.data.error == 0){
                 this.$refs['form'].clearValidate()
                 this.$message({
-                  message: '职位创建成功',
+                  message: '职位修改成功',
                   type: 'success'
                 })
-                this.needInit = true
                 this.$router.push('/main/job_manage/on_job')
               }
             })
@@ -182,22 +188,67 @@ export default {
           return false;
         }
       })
-    }
+    },
+    jobDataInit(info){
+      this.form.job_name = info.job_name
+      this.form.job_desc = info.job_desc
+      this.form.max_salary = info.max_salary
+      this.form.min_salary = info.min_salary
+      if(info.max_salary != 0 || info.min_salary != 0){
+        this.optionRadio.salaryRadio = 1
+      }
+      this.form.category = info.category_code
+      if(info.number != 0){
+        this.optionRadio.numberRadio = 1
+        this.form.number = info.number
+      }
+      this.form.address = info.address
+      this.form.sex = this.formatOptionData(info.sex,this.sexOption)
+      this.form.job_type = this.formatOptionData(info.job_type,this.jobTypeOption)
+      this.form.education = this.formatOptionData(info.education,this.educationOption)
+      this.form.experience = this.formatOptionData(info.experience,this.experienceOption)
+    },
+    formatOptionData(name,option){
+      for(let item of option){
+        if(item.name == name){
+          return item.value
+        }
+      }
+      return 0
+    },
+    Convert_BD09_To_GCJ02: function (point) {
+        console.log(point.longitude)
+        let x_pi = 3.14159265358979324 * 3000.0 / 180.0
+        let x = point.longitude - 0.0065, y = point.latitude - 0.006;
+        let z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * x_pi);
+        let theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * x_pi);
+        point.longitude = z * Math.cos(theta);
+        point.latitude = z * Math.sin(theta);
+      }
   },
   components:{
     chooseAddress
   },
   activated(){
-    if(this.needInit){
-      Object.assign(this.$data, this.$options.data())
-      this.needInit = false
-      this.$refs['form'].clearValidate()
-    }
+    this.$refs['form'].clearValidate()
+    this.submitLoading = true
+    this.$api.jobManage.getJobInfo({
+      job_id:this.$route.params.id
+    })
+      .then(res => {
+        this.submitLoading = false
+        if(res.data.error == 0){
+          this.jobDataInit(res.data.data)
+        }
+      })
+      .catch(err => {
+        this.submitLoading = false
+      })
   }
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
-.new-job
+.edit-job
   padding 40px 50px
   .form
     width 600px

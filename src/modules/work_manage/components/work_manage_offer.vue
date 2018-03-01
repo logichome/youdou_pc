@@ -2,6 +2,7 @@
   <div class="offer">
     <filter-bar ref="filterbar" type="offer" @refresh="handleRefresh" @filterChange="handleFilterChange"></filter-bar>
     <div class="offer-list" v-loading="loading">
+      <div class="empty" v-show="!list.length">暂无数据</div>
       <ul>
         <li v-for="(item,index) in list" :key="index">
           <div class="avatar pa" :style="'background-image:url('+item.header_url+')'"></div>
@@ -123,6 +124,9 @@ export default {
   position relative
   padding 40px 20px 0
   .offer-list
+    .empty
+      text-align center
+      padding 20px 0
     ul
       li
         height 50px

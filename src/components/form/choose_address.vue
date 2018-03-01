@@ -85,7 +85,6 @@ export default {
     getAddress(lnglat){
       this.geocoder.getAddress(lnglat, (status, result) => {
         if (status === 'complete' && result.info === 'OK') {
-          console.log(result.regeocode)
           this.openInfo(lnglat,result)
           //获得了有效的地址信息:
           this.form.address = result.regeocode.formattedAddress

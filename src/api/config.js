@@ -1,3 +1,3 @@
 export const API_ROOT = (process.env.NODE_ENV === 'production')
-? 'https://demo.youdou.com/'
+? 'https://s.taorenke.com/api/?r='
 :'/api/?r='

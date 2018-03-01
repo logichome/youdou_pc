@@ -7,14 +7,14 @@
             <el-button slot="append" icon="search" @click="filterSubmit">搜索</el-button>
           </el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="resource">
+        <el-form-item label="性别">
           <el-radio-group v-model="filter.sex">
             <el-radio label="">不限</el-radio>
             <el-radio label="男">男</el-radio>
             <el-radio label="女">女</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="工作经验" prop="resource">
+        <el-form-item label="工作经验">
           <el-radio-group v-model="filter.job_age">
             <el-radio class="radio" label="">不限</el-radio>
             <el-radio class="radio" label="1">1年以下</el-radio>
@@ -24,7 +24,7 @@
             <el-radio class="radio" label="5">10年以上</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="学历" prop="resource">
+        <el-form-item label="学历">
           <el-radio-group v-model="filter.educationRadio">
               <el-radio class="radio" :label="0">不限</el-radio>
               <el-radio class="radio" :label="1">指定</el-radio>
@@ -40,7 +40,7 @@
             <el-checkbox label="博士后"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="年龄范围" prop="resource">
+        <el-form-item label="年龄范围">
           <el-radio-group v-model="filter.ageOption">
             <el-radio :label="false">不限</el-radio>
             <el-radio :label="true">指定</el-radio>
@@ -52,7 +52,7 @@
             show-stops
             :step="5"
             :min="10"
-            :max="60">
+            :max="65">
           </el-slider>
         </el-form-item>
         <el-form-item label="城市">
@@ -171,7 +171,7 @@ export default {
       filter: {
         search: "",
         sex: "",
-        age: [10, 60],
+        age: [10, 65],
         job_age: "",
         educationRadio: 0,
         education: [
@@ -216,7 +216,7 @@ export default {
     },
     getList() {
       this.tableLoading = true
-      this.$api.resume.getResumeList({
+      let filter = {
         sex: this.filter.sex,
         job_age: this.filter.job_age,
         education:
@@ -234,7 +234,29 @@ export default {
         job: this.filter.search,
         pagesize:20,
         page:this.currentPage
-      })
+      }
+      switch(this.filter.job_age){
+          case '1':
+              filter.min_job_age = 0;
+              filter.max_job_age = 1;
+              break;
+          case '2':
+              filter.min_job_age = 1;
+              filter.max_job_age = 3;
+              break;
+          case '3':
+              filter.min_job_age = 3;
+              filter.max_job_age = 5;
+              break;
+          case '4':
+              filter.min_job_age = 5;
+              filter.max_job_age = 10;
+              break;
+          case '5':
+              filter.min_job_age = 10;
+              break;
+      }
+      this.$api.resume.getResumeList(filter)
         .then(res => {
           this.tableLoading =false
           if(res.data.error == 0){

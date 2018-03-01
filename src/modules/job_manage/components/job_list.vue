@@ -3,23 +3,26 @@
     <filter-bar></filter-bar>
     <div class="job-list-content" v-loading="listLoading">
       <ul>
-        <li v-for="(item,index) in jobList" :key="index">
+        <router-link tag="li" :to="'edit_job/'+item.job_id" v-for="(item,index) in jobList" :key="index">
           <div class="job-info-first fl">
             <p class="job-name">{{item.job_name}}</p>
             <p>
-              <span>全职</span>
-              <span>浏览2333次</span>
+              <span>{{item.job_type}}</span>
+              <span>浏览{{item.job_browse}}次</span>
             </p>
           </div>
           <div class="job-info-second fl">
-            <p class="black-font">广州-番禺-祈福</p>
-            <p>减速机、啊啊/sss </p>
+            <p class="black-font">{{item.address}}</p>
+            <p>{{item.category}}</p>
           </div>
           <div class="job-info-third fl">
             <p class="black-font">{{item.deliver}}</p>
             <p>简历投递</p>
           </div>
-        </li>
+          <div class="status-control fr">
+            <button :disabled="statusLoading" class="primary-button" @click.stop="changeStatus(item)">{{item.status == 1 ? '下架' : '上架'}}</button>
+          </div>
+        </router-link>
       </ul>
     </div>
     <div class="page-nav">
@@ -39,7 +42,8 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      currentPage:1
+      currentPage:1,
+      statusLoading:false
     }
   },
   computed:{
@@ -53,6 +57,23 @@ export default {
     handleCurrentChange(page){
       this.$store.dispatch(GET_JOB_MANAGE_LIST,{page})
     },
+    changeStatus(job){
+      this.statusLoading = true
+      this.$api.jobManage.editJobInfo({
+        business_id:this.$store.state.login.userInfo.business_id,
+        job_id:job.job_id,
+        status:job.status == 1 ? '2' : '1'
+      })
+        .then(res => {
+          this.statusLoading = false
+          if(res.data.error == 0) {
+            this.$store.dispatch(GET_JOB_MANAGE_LIST,{page:this.currentPage})
+          }
+        })
+        .catch(err => {
+          this.statusLoading = false
+        })
+    }
   },
   created(){
     this.$store.dispatch(GET_JOB_MANAGE_LIST,{page:this.currentPage})
