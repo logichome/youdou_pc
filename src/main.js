@@ -11,10 +11,14 @@ import './assets/styles/reset.styl'
 Vue.config.productionTip = false
 
 import './assets/font/iconfont.css'
-
 import ElementUI from 'element-ui';
+
+
 import 'element-ui/lib/theme-chalk/index.css'
+try{
+  
 Vue.use(ElementUI);
+
 
 Vue.prototype.$api = api
 Vue.prototype.$API_ROOT = API_ROOT
@@ -27,5 +31,9 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
+
+} catch(err){
+  console.log(err)
+}
 
 export default Vue

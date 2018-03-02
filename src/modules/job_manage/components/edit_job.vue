@@ -217,7 +217,6 @@ export default {
       return 0
     },
     Convert_BD09_To_GCJ02: function (point) {
-        console.log(point.longitude)
         let x_pi = 3.14159265358979324 * 3000.0 / 180.0
         let x = point.longitude - 0.0065, y = point.latitude - 0.006;
         let z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * x_pi);

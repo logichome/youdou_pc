@@ -4,7 +4,7 @@
       <el-form label-width="80px" :model="filter">
         <el-form-item label="关键字">
           <el-input class="search-input" v-model="filter.search">
-            <el-button slot="append" icon="search" @click="filterSubmit">搜索</el-button>
+            <el-button slot="append" @click="filterSubmit">搜索</el-button>
           </el-input>
         </el-form-item>
         <el-form-item label="性别">
